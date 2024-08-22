@@ -2,7 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const productoRoutes = require('./routers/productos');
-const { Producto, Categoria, Ubicacion } = require('./model/productos'); // Importar modelos aqui
+const categoriaRoutes = require('./routers/categorias');
+const ubicacionRoutes = require('./routers/ubicaciones');
+const { swaggerUi, swaggerSpec } = require('./swagger'); // Importar desde la raíz del proyecto
 
 const app = express();
 app.use(express.json());
@@ -17,68 +19,26 @@ mongoose.connect(process.env.MONGO_URI)
   });
 
 // Usar las rutas del router
-app.use('/api', productoRoutes);
+app.use('/api/productos', productoRoutes);
+app.use('/api/categorias', categoriaRoutes);
+app.use('/api/ubicaciones', ubicacionRoutes);
 
-// Ruta para ver todos los datos
-app.get('/api/datos', async (req, res) => {
-  try {
-    const productos = await Producto.find();
-    const categorias = await Categoria.find();
-    const ubicaciones = await Ubicacion.find();
-    
-    res.json({
-      productos,
-      categorias,
-      ubicaciones
-    });
-  } catch (error) {
-    res.status(500).send('Error al obtener datos');
-  }
-});
+// Configurar Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Ruta para ver todos los productos
-app.get('/api/productos', async (req, res) => {
-  try {
-    const productos = await Producto.find();
-    res.json(productos);
-  } catch (error) {
-    res.status(500).send('Error al obtener productos');
-  }
-});
-
-// Ruta para ver todas las categorias
-app.get('/api/categorias', async (req, res) => {
-  try {
-    const categorias = await Categoria.find();
-    res.json(categorias);
-  } catch (error) {
-    res.status(500).send('Error al obtener categorias');
-  }
-});
-
-// Ruta para ver todas las ubicaciones
-app.get('/api/ubicaciones', async (req, res) => {
-  try {
-    const ubicaciones = await Ubicacion.find();
-    res.json(ubicaciones);
-  } catch (error) {
-    res.status(500).send('Error al obtener ubicaciones');
-  }
+// Ruta de prueba
+app.get('/', (req, res) => {
+    res.send('mi servidor CRUD');
 });
 
 // Manejar errores
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Algo salio mal en el servidor');
+  res.status(500).send('Algo salió mal en el servidor');
 });
 
 // Iniciar el servidor
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Servidor escuchando en el puerto ${port}`);
-});
-
-// Ruta de prueba
-app.get('/', (req, res) => {
-    res.send('mi servidor CRUD');
 });

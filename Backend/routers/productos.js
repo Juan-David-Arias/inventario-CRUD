@@ -1,11 +1,116 @@
 const express = require('express');
 const router = express.Router();
-const { Producto, Categoria, Ubicacion } = require('../model/productos');
+const { Producto } = require('../model/estructura');
 
-///POST 
-
-// Crear un nuevo producto
-router.post('/productos', async (req, res) => {
+/**
+ * @openapi
+ * /api/productos:
+ *   get:
+ *     summary: Obtener todos los productos
+ *     responses:
+ *       200:
+ *         description: Lista de productos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   nombre:
+ *                     type: string
+ *                   categoria:
+ *                     type: string
+ *                   cantidad:
+ *                     type: integer
+ *                   precio_unitario:
+ *                     type: number
+ *                   ubicacion:
+ *                     type: string
+ *   post:
+ *     summary: Crear un nuevo producto
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               categoria:
+ *                 type: string
+ *               cantidad:
+ *                 type: integer
+ *               precio_unitario:
+ *                 type: number
+ *               ubicacion:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Producto creado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 nombre:
+ *                   type: string
+ *                 categoria:
+ *                   type: string
+ *                 cantidad:
+ *                   type: integer
+ *                 precio_unitario:
+ *                   type: number
+ *                 ubicacion:
+ *                   type: string
+ *   put:
+ *     summary: Actualizar un producto existente
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del producto a actualizar
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               categoria:
+ *                 type: string
+ *               cantidad:
+ *                 type: integer
+ *               precio_unitario:
+ *                 type: number
+ *               ubicacion:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Producto actualizado
+ *       404:
+ *         description: Producto no encontrado
+ *   delete:
+ *     summary: Eliminar un producto existente
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del producto a eliminar
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Producto eliminado
+ *       404:
+ *         description: Producto no encontrado
+ */
+router.post('/', async (req, res) => {
   try {
     const nuevoProducto = new Producto(req.body);
     const productoGuardado = await nuevoProducto.save();
@@ -16,34 +121,16 @@ router.post('/productos', async (req, res) => {
   }
 });
 
-// Agregar una nueva categoria
-router.post('/categorias', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const nuevaCategoria = new Categoria(req.body);
-    const categoriaGuardada = await nuevaCategoria.save();
-    res.status(201).json(categoriaGuardada);
+    const productos = await Producto.find();
+    res.json(productos);
   } catch (error) {
-    console.error('Error al agregar la categoria:', error);
-    res.status(500).send('Error al agregar la categoria');
+    res.status(500).send('Error al obtener productos');
   }
 });
 
-// Agregar una nueva ubicacion
-router.post('/ubicaciones', async (req, res) => {
-  try {
-    const nuevaUbicacion = new Ubicacion(req.body);
-    const ubicacionGuardada = await nuevaUbicacion.save();
-    res.status(201).json(ubicacionGuardada);
-  } catch (error) {
-    console.error('Error al agregar la ubicacion:', error);
-    res.status(500).send('Error al agregar la ubicacion');
-  }
-});
-
-///PUT
-
-// Actualizar un producto
-router.put('/productos/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const productoActualizado = await Producto.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(productoActualizado || { mensaje: 'Producto no encontrado' });
@@ -52,55 +139,12 @@ router.put('/productos/:id', async (req, res) => {
   }
 });
 
-// Actualizar una categoria
-router.put('/categorias/:id', async (req, res) => {
-  try {
-    const categoriaActualizada = await Categoria.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(categoriaActualizada || { mensaje: 'Categoria no encontrada' });
-  } catch (error) {
-    res.status(500).send('Error al actualizar la categoria');
-  }
-});
-
-// Actualizar una ubicacion
-router.put('/ubicaciones/:id', async (req, res) => {
-  try {
-    const ubicacionActualizada = await Ubicacion.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(ubicacionActualizada || { mensaje: 'Ubicacion no encontrada' });
-  } catch (error) {
-    res.status(500).send('Error al actualizar la ubicacion');
-  }
-});
-
-///DELETE
-
-// Eliminar un producto
-router.delete('/productos/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const productoEliminado = await Producto.findByIdAndDelete(req.params.id);
     res.json(productoEliminado ? { mensaje: 'Producto eliminado' } : { mensaje: 'Producto no encontrado' });
   } catch (error) {
     res.status(500).send('Error al eliminar el producto');
-  }
-});
-
-// Eliminar una categoria
-router.delete('/categorias/:id', async (req, res) => {
-  try {
-    const categoriaEliminada = await Categoria.findByIdAndDelete(req.params.id);
-    res.json(categoriaEliminada ? { mensaje: 'Categoria eliminada' } : { mensaje: 'Categoria no encontrada' });
-  } catch (error) {
-    res.status(500).send('Error al eliminar la categoria');
-  }
-});
-
-// Eliminar una ubicacion
-router.delete('/ubicaciones/:id', async (req, res) => {
-  try {
-    const ubicacionEliminada = await Ubicacion.findByIdAndDelete(req.params.id);
-    res.json(ubicacionEliminada ? { mensaje: 'Ubicacion eliminada' } : { mensaje: 'Ubicacion no encontrada' });
-  } catch (error) {
-    res.status(500).send('Error al eliminar la ubicacion');
   }
 });
 
