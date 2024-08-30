@@ -1,0 +1,59 @@
+/* form.css */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #003366; /* Azul oscuro para el fondo de la página */
+    overflow-y: auto; /* Permitir el desplazamiento vertical si es necesario */
+}
+
+.container {
+    background-color: #d9d8e7; /* Fondo blanco para el formulario */
+    color: black; /* Texto negro para contraste */
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 20px auto; /* Centrar el contenedor y añadir margen superior e inferior */
+    width: 100%; /* Hacer que el contenedor use todo el ancho disponible */
+    box-sizing: border-box; /* Incluir padding y border en el ancho total */
+}
+
+form {
+    background-color: #f0f0f0; /* Fondo gris claro para el formulario */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input, textarea, button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+input, textarea {
+    background-color: #ffffff; /* Fondo blanco para inputs y textarea */
+    color: #333333; /* Texto gris oscuro en inputs y textarea */
+}
+
+button {
+    background-color: #0044cc; /* Azul rey para el botón */
+    color: #ffffff; /* Texto blanco en el botón */
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0033a0; /* Azul más oscuro al pasar el cursor */
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 80%; /* Reducción del ancho del logo al 80% del contenedor */
+    max-width: 300px; /* Ancho máximo del logo */
+    height: auto;
+}

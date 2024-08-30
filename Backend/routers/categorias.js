@@ -2,126 +2,77 @@ const express = require('express');
 const router = express.Router();
 const { Categoria } = require('../model/estructura');
 
-/**
- * @openapi
- * /api/categorias:
- *   get:
- *     summary: Obtener todas las categorías
- *     responses:
- *       200:
- *         description: Lista de categorías
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   nombre:
- *                     type: string
- *                   descripcion:
- *                     type: string
- *   post:
- *     summary: Crear una nueva categoría
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *               descripcion:
- *                 type: string
- *     responses:
- *       201:
- *         description: Categoría creada
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 nombre:
- *                   type: string
- *                 descripcion:
- *                   type: string
- *   put:
- *     summary: Actualizar una categoría existente
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la categoría a actualizar
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *               descripcion:
- *                 type: string
- *     responses:
- *       200:
- *         description: Categoría actualizada
- *       404:
- *         description: Categoría no encontrada
- *   delete:
- *     summary: Eliminar una categoría existente
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la categoría a eliminar
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Categoría eliminada
- *       404:
- *         description: Categoría no encontrada
- */
 router.post('/', async (req, res) => {
-  try {
-    const nuevaCategoria = new Categoria(req.body);
-    const categoriaGuardada = await nuevaCategoria.save();
-    res.status(201).json(categoriaGuardada);
-  } catch (error) {
-    console.error('Error al agregar la categoría:', error);
-    res.status(500).send('Error al agregar la categoría');
-  }
+    try {
+        const { nombre, descripcion } = req.body;
+        const categoria = new Categoria({ nombre, descripcion });
+        await categoria.save();
+        res.status(201).json(categoria);
+    } catch (error) {
+        console.error('Error al agregar la categoría:', error);
+        res.status(500).json({ message: 'Error al agregar la categoría' });
+    }
 });
 
+// Obtener todas las categorías
 router.get('/', async (req, res) => {
-  try {
-    const categorias = await Categoria.find();
-    res.json(categorias);
-  } catch (error) {
-    res.status(500).send('Error al obtener categorías');
-  }
+    try {
+        const categorias = await Categoria.find();
+        res.status(200).json(categorias);
+    } catch (error) {
+        console.error('Error al obtener las categorías:', error);
+        res.status(500).json({ message: 'Error al obtener las categorías' });
+    }
 });
 
+// Obtener una categoría por ID
+router.get('/:id', async (req, res) => {
+    try {
+        const categoria = await Categoria.findById(req.params.id);
+        if (categoria) {
+            res.status(200).json(categoria);
+        } else {
+            res.status(404).json({ message: 'Categoría no encontrada' });
+        }
+    } catch (error) {
+        console.error('Error al obtener la categoría:', error);
+        res.status(500).json({ message: 'Error al obtener la categoría' });
+    }
+});
+
+// Actualizar una categoría por ID
 router.put('/:id', async (req, res) => {
-  try {
-    const categoriaActualizada = await Categoria.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(categoriaActualizada || { mensaje: 'Categoría no encontrada' });
-  } catch (error) {
-    res.status(500).send('Error al actualizar la categoría');
-  }
+    try {
+        const { nombre, descripcion } = req.body;
+        const categoria = await Categoria.findByIdAndUpdate(
+            req.params.id,
+            { nombre, descripcion },
+            { new: true }
+        );
+        if (categoria) {
+            res.status(200).json(categoria);
+        } else {
+            res.status(404).json({ message: 'Categoría no encontrada' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar la categoría:', error);
+        res.status(500).json({ message: 'Error al actualizar la categoría' });
+    }
 });
 
+// Eliminar una categoría por ID
 router.delete('/:id', async (req, res) => {
-  try {
-    const categoriaEliminada = await Categoria.findByIdAndDelete(req.params.id);
-    res.json(categoriaEliminada ? { mensaje: 'Categoría eliminada' } : { mensaje: 'Categoría no encontrada' });
-  } catch (error) {
-    res.status(500).send('Error al eliminar la categoría');
-  }
+    try {
+        const categoria = await Categoria.findByIdAndDelete(req.params.id);
+        if (categoria) {
+            res.status(200).json({ message: 'Categoría eliminada' });
+        } else {
+            res.status(404).json({ message: 'Categoría no encontrada' });
+        }
+    } catch (error) {
+        console.error('Error al eliminar la categoría:', error);
+        res.status(500).json({ message: 'Error al eliminar la categoría' });
+    }
 });
 
 module.exports = router;

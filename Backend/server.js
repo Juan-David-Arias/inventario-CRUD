@@ -1,16 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
-require('dotenv').config();
+const cors = require('cors');
 const productoRoutes = require('./routers/productos');
 const categoriaRoutes = require('./routers/categorias');
 const ubicacionRoutes = require('./routers/ubicaciones');
-const { swaggerUi, swaggerSpec } = require('./swagger'); // Importar desde la raíz del proyecto
+const config = require('./config');
 
 const app = express();
 app.use(express.json());
 
+// Configura CORS para permitir solicitudes desde cualquier origen
+app.use(cors({
+  origin: '*', // Permite todos los orígenes
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Métodos HTTP permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'] // Encabezados permitidos
+}));
+
 // Conectar a MongoDB
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(config.mongoURI)
   .then(() => {
     console.log('Conectado a MongoDB');
   })
@@ -22,9 +29,6 @@ mongoose.connect(process.env.MONGO_URI)
 app.use('/api/productos', productoRoutes);
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/ubicaciones', ubicacionRoutes);
-
-// Configurar Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Ruta de prueba
 app.get('/', (req, res) => {
@@ -38,7 +42,7 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar el servidor
-const port = process.env.PORT || 3001;
+const port = config.port;
 app.listen(port, () => {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });

@@ -2,114 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Producto } = require('../model/estructura');
 
-/**
- * @openapi
- * /api/productos:
- *   get:
- *     summary: Obtener todos los productos
- *     responses:
- *       200:
- *         description: Lista de productos
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   nombre:
- *                     type: string
- *                   categoria:
- *                     type: string
- *                   cantidad:
- *                     type: integer
- *                   precio_unitario:
- *                     type: number
- *                   ubicacion:
- *                     type: string
- *   post:
- *     summary: Crear un nuevo producto
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *               categoria:
- *                 type: string
- *               cantidad:
- *                 type: integer
- *               precio_unitario:
- *                 type: number
- *               ubicacion:
- *                 type: string
- *     responses:
- *       201:
- *         description: Producto creado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 nombre:
- *                   type: string
- *                 categoria:
- *                   type: string
- *                 cantidad:
- *                   type: integer
- *                 precio_unitario:
- *                   type: number
- *                 ubicacion:
- *                   type: string
- *   put:
- *     summary: Actualizar un producto existente
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del producto a actualizar
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *               categoria:
- *                 type: string
- *               cantidad:
- *                 type: integer
- *               precio_unitario:
- *                 type: number
- *               ubicacion:
- *                 type: string
- *     responses:
- *       200:
- *         description: Producto actualizado
- *       404:
- *         description: Producto no encontrado
- *   delete:
- *     summary: Eliminar un producto existente
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del producto a eliminar
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Producto eliminado
- *       404:
- *         description: Producto no encontrado
- */
+// Crear un nuevo producto
 router.post('/', async (req, res) => {
   try {
     const nuevoProducto = new Producto(req.body);
@@ -121,15 +14,48 @@ router.post('/', async (req, res) => {
   }
 });
 
+
+// Obtener todos los productos
+// router.get('/', async (req, res) => {
+//   try {
+//     const productos = await Producto.find();
+//     res.json(productos);
+//   } catch (error) {
+//     res.status(500).send('Error al obtener productos');
+//   }
+// });
+
+
+
+
+
+// Ruta para obtener productos por nombre exacto o todos los productos
 router.get('/', async (req, res) => {
   try {
-    const productos = await Producto.find();
-    res.json(productos);
+    const { nombre } = req.query;
+    if (nombre) {
+      // Busca productos cuyo nombre coincida exactamente
+      const productos = await Producto.find({ nombre: { $eq: nombre } });
+      res.json(productos);
+    } else {
+      // Devuelve todos los productos si no se especifica nombre
+      const productos = await Producto.find();
+      res.json(productos);
+    }
   } catch (error) {
-    res.status(500).send('Error al obtener productos');
+    res.status(500).send('Error al buscar productos');
   }
 });
 
+
+
+
+
+
+
+
+
+// Actualizar un producto por ID
 router.put('/:id', async (req, res) => {
   try {
     const productoActualizado = await Producto.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -139,6 +65,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// Eliminar un producto por ID
 router.delete('/:id', async (req, res) => {
   try {
     const productoEliminado = await Producto.findByIdAndDelete(req.params.id);

@@ -1,0 +1,66 @@
+/* Lista.css */
+.lista-container {
+    background-color: #f4f4f4; /* Fondo gris claro para el contenedor */
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 1000px; /* Ancho máximo del contenedor */
+    margin: 20px auto; /* Centrar el contenedor con márgenes superior e inferior */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para el contenedor */
+}
+
+h2 {
+    text-align: center;
+    color: #003366; /* Azul oscuro para el título */
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Colapsar bordes de la tabla */
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Línea divisoria sutil entre filas */
+}
+
+th {
+    background-color: #0044cc; /* Azul rey para el encabezado de la tabla */
+    color: white; /* Texto blanco en el encabezado */
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Fondo alternante para las filas pares */
+}
+
+tr:hover {
+    background-color: #e0e0e0; /* Fondo gris claro al pasar el cursor sobre una fila */
+}
+
+button {
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.eliminar {
+    background-color: #cc0000; /* Rojo para el botón de eliminar */
+}
+
+.eliminar:hover {
+    background-color: #990000; /* Rojo más oscuro al pasar el cursor */
+}
+
+.actualizar {
+    background-color: #0044cc; /* Azul rey para el botón de actualizar */
+}
+
+.actualizar:hover {
+    background-color: #0033a0; /* Azul más oscuro al pasar el cursor */
+}
