@@ -83,32 +83,6 @@ Este proyecto es una aplicación web para gestionar el inventario de productos. 
 - **Backend**: Node.js, Express, MongoDB
 - **Frontend**: React, Material-UI
 
-## 6. Estructura del Proyecto
-
-```bash
-inventario-productos/
-│
-├── backend/
-│   ├── model/
-│   ├── routers/
-│   ├── .env
-│   ├── config.js
-│   ├── server.js
-│   └── ...
-│
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── styles/
-│   │   ├── App.js
-│   │   └── index.js
-│   ├── .env
-│   └── ...
-│
-├── README.md
-├── .gitignore
-└── package.json
 
 7. Endpoints del Backend
 Productos
